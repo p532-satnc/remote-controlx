@@ -6,14 +6,48 @@ package edu.iu.habahram.remotecontroller.model;
 public class RemoteControl {
 	Command[] onCommands;
 	Command[] offCommands;
+	Command lastCommand;
  
 	public RemoteControl(int numberOfDevices) {
 		onCommands = new Command[numberOfDevices];
 		offCommands = new Command[numberOfDevices];
+		lastCommand = new Command() {
+			@Override
+			public String execute() {
+
+				return null;
+			}
+
+			@Override
+			public String undo() {
+
+				return null;
+			}
+		};
  
 		for (int i = 0; i < numberOfDevices; i++) {
-			onCommands[i] = () -> { return ""; };
-			offCommands[i] = () -> { return ""; };
+			onCommands[i] = new Command() {
+				@Override
+				public String execute() {
+					return "";
+				}
+
+				@Override
+				public String undo() {
+					return "";
+				}
+			};
+			offCommands[i] = new Command() {
+				@Override
+				public String execute() {
+					return "";
+				}
+
+				@Override
+				public String undo() {
+					return "";
+				}
+			};
 		}
 	}
   
@@ -23,13 +57,17 @@ public class RemoteControl {
 	}
  
 	public String onButtonWasPushed(int slot) {
-
+		lastCommand = onCommands[slot];
 		return onCommands[slot].execute();
 	}
  
 	public String offButtonWasPushed(int slot) {
-
+		lastCommand = onCommands[slot];
 		return offCommands[slot].execute();
+	}
+
+	public String undoButtonWasPushed() {
+		return lastCommand.undo();
 	}
 
 	public String toString() {
